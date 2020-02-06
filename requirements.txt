@@ -1,0 +1,5 @@
+Scrapy==1.7.3
+lxml==4.2.4
+requests==2.19.1
+wget==3.2
+xlrd==1.1.0

@@ -9,7 +9,6 @@ from jedeschule.utils import get_first_or_none, cleanjoin
 
 class BayernSpider(scrapy.Spider):
     name = "bayern"
-    #allowed_domains = ["https://www.km.bayern.de/schueler/schulsuche.html"]
     start_urls = ['https://www.km.bayern.de/schueler/schulsuche.html?s=&t=9999&r=9999&o=9999&u=0&m=3&seite=1']
 
     def parse(self, response):

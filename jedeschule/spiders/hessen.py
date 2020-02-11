@@ -169,7 +169,7 @@ def download_berufliche_Schulen():
 
 
 def normalize(data):
-    BASE_PATH = '../../'
+    BASE_PATH = '.'
     School = namedtuple('School',
                     ['id', 'name', 'address', 'address2', 'zip', 'city', 'school_type', 'phone', 'fax', 'email',
                      'website'])
@@ -178,7 +178,6 @@ def normalize(data):
         output = csv.writer(f)
         output.writerow(School._fields)
         for row in data:
-            
             s = School(
                 id          = 'HE-{}'.format(str(int(row['Schul-nummer']))),
                 name        = row['Name der Schule'],
@@ -192,7 +191,6 @@ def normalize(data):
                 email       = row['Email Adresse'],
                 website     = row['Internetseite']
             )
-
             output.writerow(s)
 
 
@@ -205,7 +203,7 @@ def fix_phone_number(number):
     return result
     
 
-if __name__ == '__main__':
+def crawl_hessen():
     data = []
     data += download_allgemeine_Schulen()
     data += download_freie_allgemeine_Schulen()

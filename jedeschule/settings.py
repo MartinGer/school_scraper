@@ -67,11 +67,7 @@ ROBOTSTXT_OBEY = False
 # Configure item pipelines
 # See http://scrapy.readthedocs.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-<<<<<<< HEAD
-    'jedeschule.pipelines.SchoolPipeline': 200,
-=======
     #'jedeschule.pipelines.SchoolPipeline': 300,
->>>>>>> d4015adf9440234ad6ccacb664ed895372a4927a
     'jedeschule.pipelines.JsonPipeline': 300
 }
 

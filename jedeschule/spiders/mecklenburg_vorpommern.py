@@ -11,9 +11,8 @@ import os
 from urllib.parse import urljoin
 from twisted.internet import reactor, defer
 
-from jedeschule.items import School
 
-def crawl_mvp():
+def crawl_data():
     filename = 'mv.xlsx'
     url_mv = 'http://service.mvnet.de/_php/download.php?datei_id=1619185'
     wget.download(url_mv, filename)
@@ -83,44 +82,41 @@ def crawl_mvp():
                 row_data[keys[col_number]] = cell.value
             data.append(row_data)
 
-    with open('data/mecklenburg-vorpommern.json', 'w') as json_file:
-        json_file.write(json.dumps(data))
     os.remove(filename)
+    return data
 
 
+def normalize(data):
+    normalized_data = []
+    for row in data:
+        if isinstance(row['Dst-Nr.:'], float):
+            school_id = int(row['Dst-Nr.:'])
+        else:
+            school_id = row['Dst-Nr.:']
 
-
-def normalize_mv():
-    state = 'mecklenburg-vorpommern'
-    with open(os.path.join(BASE_PATH, 'data/{}.json'.format(state)), encoding="utf8") as f:
-        data = json.load(f)
-    with open(os.path.join(BASE_PATH, 'data/{}.csv'.format(state)), 'w', newline='', encoding="utf8") as f:
-        output = csv.writer(f)
-        output.writerow(School._fields)
-
-        for row in data:
-            if isinstance(row['Dst-Nr.:'], float):
-                school_id = int(row['Dst-Nr.:'])
-            else:
-                school_id = row['Dst-Nr.:']
-
+        if school_id != '':
             try:
                 schulart = row['Schulart/ Org.form']
             except:
                 schulart = row['Schulart/\nOrg.form']
 
-            s = School(
-                id='MV-{}'.format(school_id),
-                name=row['Schulname'],
-                address=row['Straße, Haus-Nr.'],
-                address2='',
-                zip=str(int(float(row['Plz']))) if row['Plz'] != '' else '',
-                city=row['Ort'],
-                school_type=schulart,
-                phone=row['Telefon'],
-                fax=row['Telefax'],
-                email=row['E-Mail'],
-                website=row['Homepage']
-            )
+            school_dict = {
+                'id': 'MV-{}'.format(school_id),
+                'name': row['Schulname'],
+                'address': row['Straße, Haus-Nr.'],
+                'zip': str(int(float(row['Plz']))) if row['Plz'] != '' else '',
+                'city': row['Ort'],
+                'school_type': schulart,
+                'phone': row['Telefon'],
+                'fax': row['Telefax'],
+                'email': row['E-Mail'],
+                'website': row['Homepage']
+            }
+            normalized_data.append({'info': school_dict})
+            
+    with open('data/mecklenburg-vorpommern.json', 'w') as json_file:
+        json_file.write(json.dumps(normalized_data))
 
-            output.writerow(s)
+
+def crawl_mvp():
+    return normalize(crawl_data())

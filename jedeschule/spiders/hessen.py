@@ -1,11 +1,7 @@
-import pandas as pd
-import wget
 import os
-import xlrd
-import sys
-from collections import namedtuple
-import csv
 import json
+import wget
+import xlrd
 
 
 def download_allgemeine_Schulen():

@@ -1,10 +1,8 @@
-import scrapy
-from scrapy.shell import inspect_response
-from jedeschule.utils import cleanjoin
-from jedeschule.items import School
-from scrapy import Item
 import time
 import json
+import scrapy
+from scrapy import Item
+from jedeschule.items import School
 
 
 class BadenWürttembergSpider(scrapy.Spider):
@@ -104,7 +102,7 @@ class BadenWürttembergSpider(scrapy.Spider):
 
 
     @staticmethod
-    def normalize(self, item: Item) -> School:
+    def normalize(item: Item) -> School:
         return School(name=item.get('name'),
                       id='BW-{}'.format(item.get('id')),
                       address=item.get('Strasse'),

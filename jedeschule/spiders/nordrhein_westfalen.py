@@ -1,15 +1,9 @@
-# -*- coding: utf-8 -*-
-import scrapy
-from scrapy import Item
-from scrapy.shell import inspect_response
-
-import requests
 import csv
 import json
-from lxml import etree
 from io import StringIO
 from urllib.parse import urljoin
-from jedeschule.utils import get_first_or_none, cleanjoin
+from lxml import etree
+import requests
 
 
 def __retrieve_keys(url):

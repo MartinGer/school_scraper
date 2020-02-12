@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
 from scrapy import Item
-from scrapy.shell import inspect_response
 
 from jedeschule.items import School
 from jedeschule.utils import get_first_or_none, cleanjoin
@@ -28,7 +27,6 @@ class BayernSpider(scrapy.Spider):
 
 
     def parse_detail(self, response):
-        # inspect_response(response, self)
         text = response.css("article ::text")
         collection = {}
         street, city = response.css("article > p")[0].css("::text").extract()
@@ -56,5 +54,5 @@ class BayernSpider(scrapy.Spider):
                       address=item.get('street'),
                       city=' '.join(city_parts),
                       zip=zip_code,
-                      id='BAY-{}'.format(item.get('number')))
-
+                      id='BAY-{}'.format(item.get('number'))
+                      )

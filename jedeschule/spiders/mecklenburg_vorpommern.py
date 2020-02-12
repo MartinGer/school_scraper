@@ -1,15 +1,51 @@
-# -*- coding: utf-8 -*-
-import scrapy
-from scrapy import Item
-from scrapy.shell import inspect_response
-
-import requests
-import wget
-import xlrd
 import json
 import os
-from urllib.parse import urljoin
-from twisted.internet import reactor, defer
+import wget
+import xlrd
+
+
+Legend = {
+    'Agy': 'Abendgymnasium',
+    'BLS': 'Berufliche Schule',
+    'FöL': 'Schule mit dem Förderschwerpunkt Lernen',
+    'FöS': 'Schule mit dem Förderschwerpunkt Sehen',
+    'FöSp': 'Schule mit dem Förderschwerpunkt Sprache',
+    'FöK': 'Schule mit dem Förderschwerpunkt körperliche und motorische Entwicklung',
+    'FöK/GS': 'Schule mit dem Förderschwerpunkt körperliche und motorische Entwicklung mit Grundschule',
+    'FöK/FöSp': 'Schule mit dem Förderschwerpunkt körperliche und motorische Entwicklung und mit dem Förderschwerpunkt Sprache',
+    'FöG': 'Schule mit dem Förderschwerpunkt geistige Entwicklung',
+    'FöG/FöKr': 'Schule mit dem Förderschwerpunkt geistige Entwicklung und mit dem Förderschwerpunkt Unterricht kranker Schülerinnen und Schüler',
+    'FöKr': 'Schule mit dem Förderschwerpunkt Unterricht kranker Schülerinnen und Schüler',
+    'FöL/FöG': 'Schule mit dem Förderschwerpunkt Lernen und dem Förderschwerpunkt geistige Entwicklung',
+    'FöL/FöV': 'Schule mit dem Förderschwerpunkt Lernen und dem Förderschwerpunkt emotionale und soziale Entwicklung',
+    'FöL/FöKr': 'Schule mit dem Förderschwerpunkt Lernen und dem Förderschwerpunkt Unterricht kranker Schülerinnen und Schüler',
+    'FöL/FöSp': 'Schule mit dem Förderschwerpunkt Lernen und mit dem Förderschwerpunkt Sprache',
+    'FöL/FöV/FöSp': 'Schule mit dem Förderschwerpunkt Lernen, dem Förderschwerpunkt emotionale und soziale Entwicklung und mit dem Förderschwerpunkt Sprache',
+    'FöV': 'Schule mit dem Förderschwerpunkt emotionale und soziale Entwicklung',
+    'FöV/FöKr': 'Schule mit dem Förderschwerpunkt emotionale und soziale Entwicklung und dem Förderschwerpunkt Unterricht kranker Schülerinnen und Schüler',
+    'FöV/FöL': 'Schule mit dem Förderschwerpunkt emotionale und soziale Entwicklung und dem Förderschwerpunkt Lernen)',
+    'FöL/FöV/FöKr': 'Schule mit den Förderschwerpunkten Lernen, dem Förderschwerpunkt emotionale und soziale Entwicklung sowie dem Förderschwerpunkt Unterricht kranker Schülerinnen und Schüler',
+    'FöH': 'Schule mit dem Förderschwerpunkt Hören',
+    'GS': 'Grundschule',
+    'GS/OS': 'Grundschule mit schulartunabhängiger Orientierungsstufe',
+    'GS/FöSp': 'Grundschule mit selbstständigen Klassen mit dem Förderschwerpunkt Sprache',
+    'GS/OS/Gy': 'Grundschule mit schulartunabhängiger Orientierungsstufe und Gymnasium',
+    'Gy': 'Gymnasium',
+    'Gy/OS': 'Gymnasium mit schulartunabhängiger Orientierungsstufe',
+    'Gy/GS/OS': 'Gymnasium mit Grundschule und schulartunabhängiger Orientierungsstufe',
+    'Gy/RegS/GS': 'Gymnasium mit Regionaler Schule und Grundschule',
+    'Gy/RegS': 'Gymnasium mit Regionaler Schule',
+    'IGS': 'Integrierte Gesamtschule',
+    'IGS/GS': 'Integrierte Gesamtschule mit Grundschule',
+    'IGS/GS/FöG': 'Integrierte Gesamtschule mit Grundschule  und Schule mit dem Förderschwerpunkt geistige Entwicklung',
+    'KGS': 'Kooperative Gesamtschule',
+    'KGS/GS': 'Kooperative Gesamtschule mit Grundschule',
+    'KGS/GS/\nFöL': 'Kooperative Gesamtschule mit Grundschule und Schule mit dem Förderschwerpunkt Lernen',
+    'RegS': 'Regionale Schule',
+    'RegS/GS': 'Regionale Schule mit Grundschule',
+    'RegS/Gy': 'Regionale Schule mit Gymnasium',
+    'WS': 'Waldorfschule'
+}
 
 
 def crawl_data():
@@ -19,57 +55,6 @@ def crawl_data():
     workbook = xlrd.open_workbook(filename)
     sheets = ['Schulverzeichnis öffentl. ABS', 'Schulverzeichnis öffentl. BLS','Schulverzeichnis freie ABS']
 
-    legend = {
-        'schulart': {
-            'Agy': 'Abendgymnasium',
-            'FöL': 'Schule mit dem Förderschwerpunkt Lernen',
-            'FöS': 'Schule mit dem Förderschwerpunkt Sehen',
-            'FöSp': 'Schule mit dem Förderschwerpunkt Sprache',
-            'FöK': 'Schule mit dem Förderschwerpunkt körperliche und motorische Entwicklung',
-            'FöK/GS': 'Schule mit dem Förderschwerpunkt körperliche und motorische Entwicklung mit Grundschule',
-            'FöG': 'Schule mit dem Förderschwerpunkt geistige Entwicklung',
-            'FöKr': 'Schule mit dem Förderschwerpunkt Unterricht kranker Schülerinnen und Schüler',
-            'FöL/FöG': 'Schule mit dem Förderschwerpunkt Lernen und  dem Förderschwerpunkt geistige Entwicklung',
-            'FöV': 'Schule mit dem Förderschwerpunkt emotionale und soziale Entwicklung',
-            'FöV/FöKr': 'Schule mit dem Förderschwerpunkt emotionale und soziale Entwicklung und dem Förderschwerpunkt Unterricht kranker Schülerinnen und Schüler',
-            'FöV/FöL': 'Schule mit dem Förderschwerpunkt emotionale und soziale Entwicklung und dem Förderschwerpunkt Lernen)',
-            'FöL/FöV/FöKr': 'Schule mit den Förderschwerpunkten Lernen, dem Förderschwerpunkt emotionale und soziale Entwicklung sowie dem Förderschwerpunkt Unterricht kranker Schülerinnen und Schüler',
-            'FöH': 'Schule mit dem Förderschwerpunkt Hören',
-            'GS': 'Grundschule',
-            'GS/OS': 'Grundschule mit schulartunabhängiger Orientierungsstufe',
-            'GS/FöSp': 'Grundschule mit selbstständigen Klassen mit dem Förderschwerpunkt Sprache',
-            'GS/OS/Gy': 'Grundschule mit schulartunabhängiger Orientierungsstufe und Gymnasium',
-            'Gy': 'Gymnasium',
-            'Gy/GS/OS': 'Gymnasium mit Grundschule und schulartunabhängiger Orientierungsstufe',
-            'Gy/RegS/GS': 'Gymnasium mit Regionaler Schule und Grundschule',
-            'IGS': 'Integrierte Gesamtschule',
-            'IGS/GS': 'Integrierte Gesamtschule mit Grundschule',
-            'IGS/GS/FöG': 'Integrierte Gesamtschule mit Grundschule  und Schule mit dem Förderschwerpunkt geistige Entwicklung',
-            'KGS': 'Kooperative Gesamtschule',
-            'KGS/GS': 'Kooperative Gesamtschule mit Grundschule',
-            'KGS/GS/\nFöL': 'Kooperative Gesamtschule mit Grundschule und Schule mit dem Förderschwerpunkt Lernen',
-            'RegS': 'Regionale Schule',
-            'RegS/GS': 'Regionale Schule mit Grundschule',
-            'RegS/Gy': 'Regionale Schule mit Gymnasium',
-            'WS': 'Waldorfschule'
-        },
-        'schulamt': {
-            'GW': 'Greifswald',
-            'NB': 'Neubrandenburg',
-            'RO': 'Rostock',
-            'SN': 'Schwerin'
-        },
-        'landkreis': {
-            'HRO': 'Hansestadt Rostock',
-            'SN': 'Landeshauptstadt Schwerin',
-            'LRO': 'Landkreis Rostock',
-            'LUP': 'Landkreis Ludwigslust-Parchim',
-            'MSE': 'Landkreis Mecklenburgische Seenplatte',
-            'NWM': 'Landkreis Nordwestmecklenburg',
-            'VG': 'Landkreis Vorpommern-Greifswald',
-            'VR': 'Landkreis Vorpommern-Rügen'
-        }
-    }
     data = []
     for sheet in sheets:
         worksheet = workbook.sheet_by_name(sheet)
@@ -106,7 +91,7 @@ def normalize(data):
                 'address': row['Straße, Haus-Nr.'],
                 'zip': str(int(float(row['Plz']))) if row['Plz'] != '' else '',
                 'city': row['Ort'],
-                'school_type': schulart,
+                'school_type': Legend[schulart],
                 'phone': row['Telefon'],
                 'fax': row['Telefax'],
                 'email': row['E-Mail'],

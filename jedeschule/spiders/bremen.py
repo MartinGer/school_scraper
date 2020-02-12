@@ -2,7 +2,6 @@
 import scrapy
 import re
 from scrapy import Item
-from scrapy.shell import inspect_response
 
 from jedeschule.items import School
 from jedeschule.spiders.school_spider import SchoolSpider

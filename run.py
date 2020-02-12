@@ -28,7 +28,7 @@ settings = get_project_settings()
 runner = CrawlerRunner(settings)
 
 
-#@defer.inlineCallbacks
+@defer.inlineCallbacks
 def crawl():
     # yield runner.crawl(BadenWürttembergSpider)
     # yield runner.crawl(BayernSpider)
@@ -36,8 +36,8 @@ def crawl():
     # yield runner.crawl(BrandenburgSpider)
     # yield runner.crawl(BremenSpider)
     # yield runner.crawl(HamburgSpider)
-    hessen.crawl_hessen()
-    # mecklenburg_vorpommern.crawl_mvp()
+    # hessen.crawl_hessen()
+    mecklenburg_vorpommern.crawl_mvp()
     # yield runner.crawl(NiedersachsenSpider)
     # nordrhein_westfalen.crawl_nrw()
     # yield runner.crawl(RheinlandPfalzSpider)
@@ -46,9 +46,9 @@ def crawl():
     # yield runner.crawl(SachsenSpider)
     # yield runner.crawl(SchleswigHolsteinSpider)
     # yield runner.crawl(ThueringenSpider)
-    # reactor.stop()
+    #reactor.stop()
 
 
 if __name__ == '__main__':
     crawl()
-   # reactor.run()  # the script will block here until the last crawl call is finished
+    #reactor.run()  # the script will block here until the last crawl call is finished

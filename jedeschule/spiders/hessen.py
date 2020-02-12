@@ -169,28 +169,24 @@ def download_berufliche_Schulen():
 
 
 def normalize(data):
-    BASE_PATH = '.'
-    School = namedtuple('School',
-                    ['id', 'name', 'address', 'address2', 'zip', 'city', 'school_type', 'phone', 'fax', 'email',
-                     'website'])
-
-    with open(os.path.join(BASE_PATH, 'data/{}.csv'.format('hessen')), 'w', newline='', encoding='utf-8') as f:
-        output = csv.writer(f)
-        output.writerow(School._fields)
-        for row in data:
-            s = School(
-                id          = 'HE-{}'.format(str(int(row['Schul-nummer']))),
-                name        = row['Name der Schule'],
-                address     = row['Straße, Hausnummer'],
-                zip         = int(row['PLZ']),
-                city        = row['Schulort'],
-                school_type = row['Schultyp'],
-                phone       = fix_phone_number(row['Telefon-vorwahl']) + fix_phone_number(row['Telefon-nummer']),
-                fax         = fix_phone_number(row['Fax']),
-                email       = row['Email Adresse'],
-                website     = row['Internetseite']
-            )
-            output.writerow(s)
+    normalized_data = []
+    for row in data:
+        school_dict = {
+            'id': 'HE-{}'.format(str(int(row['Schul-nummer']))),
+            'name': row['Name der Schule'],
+            'address': row['Straße, Hausnummer'],
+            'zip': int(row['PLZ']),
+            'city': row['Schulort'],
+            'school_type': row['Schultyp'],
+            'phone': fix_phone_number(row['Telefon-vorwahl']) + fix_phone_number(row['Telefon-nummer']),
+            'fax': fix_phone_number(row['Fax']),
+            'email': row['Email Adresse'],
+            'website': row['Internetseite']
+        }
+        normalized_data.append({'info': school_dict})
+            
+    with open('data/hessen.json', 'w') as json_file:
+        json_file.write(json.dumps(normalized_data))
 
 
 def fix_phone_number(number):

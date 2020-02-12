@@ -7,8 +7,8 @@ from jedeschule.items import School
 
 class HamburgSpider(SchoolSpider):
     name = 'hamburg'
-
     start_urls = ['https://geoportal-hamburg.de/geodienste_hamburg_de/HH_WFS_Schulen?REQUEST=GetFeature&SERVICE=WFS&SRSNAME=EPSG%3A25832&TYPENAME=staatliche_schulen&VERSION=1.1.0']
+
 
     def parse(self, response):
         elem = etree.fromstring(response.body)
@@ -18,6 +18,7 @@ class HamburgSpider(SchoolSpider):
             for attr in member[0]:
                 data_elem[attr.tag.split('}', 1)[1]] = attr.text
             yield data_elem
+
 
     @staticmethod
     def normalize(item: Item) -> School:

@@ -30,25 +30,25 @@ runner = CrawlerRunner(settings)
 
 @defer.inlineCallbacks
 def crawl():
-    # yield runner.crawl(BadenWürttembergSpider)
-    # yield runner.crawl(BayernSpider)
-    # yield runner.crawl(BerlinSpider)
-    # yield runner.crawl(BrandenburgSpider)
-    # yield runner.crawl(BremenSpider)
-    # yield runner.crawl(HamburgSpider)
-    #hessen.crawl_hessen()
+    yield runner.crawl(BadenWürttembergSpider)
+    yield runner.crawl(BayernSpider)
+    yield runner.crawl(BerlinSpider)
+    yield runner.crawl(BrandenburgSpider)
+    yield runner.crawl(BremenSpider)
+    yield runner.crawl(HamburgSpider)
+    hessen.crawl_hessen()
     mecklenburg_vorpommern.crawl_mvp()
-    # yield runner.crawl(NiedersachsenSpider)
+    yield runner.crawl(NiedersachsenSpider)
     nordrhein_westfalen.crawl_nrw()
-    # yield runner.crawl(RheinlandPfalzSpider)
-    # yield runner.crawl(SaarlandSpider)
-    # yield runner.crawl(SachsenAnhaltSpider)
-    # yield runner.crawl(SachsenSpider)
-    # yield runner.crawl(SchleswigHolsteinSpider)
-    # yield runner.crawl(ThueringenSpider)
-    # reactor.stop()
+    yield runner.crawl(RheinlandPfalzSpider)
+    yield runner.crawl(SaarlandSpider)
+    yield runner.crawl(SachsenAnhaltSpider)
+    yield runner.crawl(SachsenSpider)
+    yield runner.crawl(SchleswigHolsteinSpider)
+    yield runner.crawl(ThueringenSpider)
+    reactor.stop()
 
 
 if __name__ == '__main__':
     crawl()
-  # reactor.run()  # the script will block here until the last crawl call is finished
+    reactor.run()  # the script will block here until the last crawl call is finished

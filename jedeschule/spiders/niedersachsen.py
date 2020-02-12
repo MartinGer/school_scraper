@@ -10,12 +10,14 @@ class NiedersachsenSpider(SchoolSpider):
     name = 'niedersachsen'
     start_urls = ['http://schulnetz.nibis.de/db/schulen/suche_2.php']
 
+
     def parse(self, response):
         for link in response.css('tr.fliess td:nth-child(4) a ::attr(href)').extract():
             yield scrapy.Request(response.urljoin(link), callback=self.parse_detail)
 
         for link in response.css('tr.fliessbgg td:nth-child(4) a ::attr(href)').extract():
             yield scrapy.Request(response.urljoin(link), callback=self.parse_detail)
+
 
     def parse_detail(self, response):
         collection = {}
@@ -35,6 +37,7 @@ class NiedersachsenSpider(SchoolSpider):
             collection[row_key] = row_value
         collection['data_url'] = response.url
         yield collection
+
 
     @staticmethod
     def normalize(item: Item) -> School:

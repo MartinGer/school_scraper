@@ -3,22 +3,6 @@ import csv
 import os
 from collections import namedtuple
 
-test = """
-id
-name
-address
-address2
-zip
-city
-school_type
-phone
-fax
-email
-website
-pupils_no
-pupils_ts
-"""
-
 BASE_PATH = '.'
 
 School = namedtuple('School',
@@ -38,7 +22,6 @@ def normalize(state):
                 id=row['info']['id'] if 'id' in row['info'] else '',
                 name=row['info']['name'],
                 address=row['info']['address'],
-                address2='',
                 zip=row['info'].get('zip'),
                 city=row['info'].get('city'),
                 school_type=row['info']['school_type'] if 'school_type' in row['info'] else '',
@@ -125,7 +108,7 @@ if __name__ == '__main__':
     # normalize('rheinland-pfalz')
     # normalize('saarland')
     # normalize('sachsen')
-    # normalize('sachsen-anhalt')
     # normalize('schleswig-holstein')
+    # normalize('sachsen-anhalt')
     # normalize('thueringen')
     

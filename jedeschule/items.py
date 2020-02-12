@@ -22,5 +22,4 @@ class School(scrapy.Item):
     provider = scrapy.Field()
     fax = scrapy.Field()
     phone = scrapy.Field()
-
     director = scrapy.Field()

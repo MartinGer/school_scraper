@@ -11,6 +11,7 @@ class BayernSpider(scrapy.Spider):
     name = "bayern"
     start_urls = ['https://www.km.bayern.de/schueler/schulsuche.html?s=&t=9999&r=9999&o=9999&u=0&m=3&seite=1']
 
+
     def parse(self, response):
         number_of_pages = response.css("div.schulsuche > div > p.Right a:last-child::text").extract_first()
         # number_of_pages = 2
@@ -19,10 +20,12 @@ class BayernSpider(scrapy.Spider):
             yield scrapy.Request(url.format(page=i),
                                  callback=self.parse_list)
 
+
     def parse_list(self, response):
         links = response.css('.ListSchools a::attr(href)').extract()
         for link in links:
             yield scrapy.Request(response.urljoin(link), callback=self.parse_detail)
+
 
     def parse_detail(self, response):
         # inspect_response(response, self)
@@ -42,6 +45,7 @@ class BayernSpider(scrapy.Spider):
         collection['students'] = get_first_or_none(text.re("Schüler: ([0-9]+)"))
         collection['url'] = response.url
         yield collection
+
 
     @staticmethod
     def normalize(item: Item) -> School:

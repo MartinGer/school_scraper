@@ -9,9 +9,9 @@ from scrapy import Item
 
 class SachsenSpider(scrapy.Spider):
     name = "sachsen"
-
     base_url = 'https://schuldatenbank.sachsen.de/'
     start_urls = ['https://schuldatenbank.sachsen.de/index.php?id=2']
+
 
     def parse(self, response):
         yield scrapy.FormRequest.from_response(
@@ -36,7 +36,6 @@ class SachsenSpider(scrapy.Spider):
         for entry in entries:
             # Remove the trailing `:` from the key (:-1)
             key = self.fix_data(entry.css("b::text").extract_first(default="kein Eintrag:").strip()[:-1])
-         #   values = self.fix_data(entry.css("::text").extract()[1:])
             values = [self.fix_data(value) for value in entry.css("::text").extract()[1:]]
             # Some schools list additional phone numbers. The problem is
             # that they do not have the header "Telefon" or something

@@ -9,8 +9,8 @@ from jedeschule.spiders.school_spider import SchoolSpider
 class SachsenAnhaltSpider(SchoolSpider):
     name = "sachsen-anhalt"
     start_urls = ['https://www.bildung-lsa.de/ajax.php?m=getSSResult&q=&lk=-1&sf=-1&so=-1&timestamp=1480082277128/']
-
     detail_url = "https://www.bildung-lsa.de/ajax.php?m=getSSDetails&id={}&timestamp=1480082332787"
+
 
     def parse(self, response):
         js_callbacks = response.css("span ::attr(onclick)").extract()
@@ -22,6 +22,7 @@ class SachsenAnhaltSpider(SchoolSpider):
             request.meta['id'] = id
             request.meta['name'] = name.strip()
             yield request
+
 
     def parse_detail(self, response):
         tables = response.css("table")
@@ -42,6 +43,7 @@ class SachsenAnhaltSpider(SchoolSpider):
         # in order to get only the address
         content['Adresse'] = content['Adresse'].replace(response.meta['name'], "").strip()
         yield content
+
 
     @staticmethod
     def normalize(item: Item) -> School:

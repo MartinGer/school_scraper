@@ -6,8 +6,8 @@ from jedeschule.items import School
 
 class SaarlandSpider(scrapy.Spider):
     name = "saarland"
-    # allowed_domains = ["www.saarland.de/4526.htm"]
     start_urls = ['https://www.saarland.de/schuldatenbank.htm?typ=alle&ort=']
+
 
     def parse(self, response):
         for school in response.css(".accordion h3"):
@@ -18,6 +18,7 @@ class SaarlandSpider(scrapy.Spider):
             request.meta['name'] = name.strip() if name else ""
             request.meta['uuid'] = uuid
             yield request
+
 
     def parse_list(self, response):
         school = response.css("body")
@@ -44,6 +45,7 @@ class SaarlandSpider(scrapy.Spider):
                 homepage_next = True
 
         yield data
+
 
     @staticmethod
     def normalize(item):

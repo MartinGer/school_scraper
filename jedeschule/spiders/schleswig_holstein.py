@@ -12,6 +12,7 @@ class SchleswigHolsteinSpider(SchoolSpider):
     base_url = 'https://www.secure-lernnetz.de/schuldatenbank/'
     start_urls = [base_url]
 
+
     def parse(self, response):
         url = self.base_url + response.css('form::attr(action)').extract_first()
         pages = response.css('#searchResultIndexTop li')
@@ -23,6 +24,7 @@ class SchleswigHolsteinSpider(SchoolSpider):
                 yield scrapy.FormRequest(url=url, formdata=formdata, callback=self.parse)
             if formdata[key].isdigit():
                 yield scrapy.FormRequest(url=url, formdata=formdata, callback=self.parse_overview_table)
+
 
     def parse_formdata(self, response):
         formdata = {}
@@ -39,11 +41,13 @@ class SchleswigHolsteinSpider(SchoolSpider):
 
         return formdata
 
+
     def parse_overview_table(self, response):
         rows = response.css('table tbody tr')
         for row in rows:
             url = self.base_url + row.css('a::attr(href)').extract()[0]
             yield scrapy.Request(url, callback=self.parse_school)
+
 
     def parse_school(self, response):
         item = {}
@@ -55,6 +59,7 @@ class SchleswigHolsteinSpider(SchoolSpider):
 
         item['data_url'] = response.url
         yield item
+
 
     @staticmethod
     def normalize(item: Item) -> School:

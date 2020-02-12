@@ -18,9 +18,11 @@ class BrandenburgSpider(SchoolSpider):
     name = "brandenburg"
     start_urls = ['https://bildung-brandenburg.de/schulportraets/index.php?id=uebersicht']
 
+
     def parse(self, response):
         for link in response.xpath('/html/body/div/div[5]/div[2]/div/div[2]/table/tbody/tr/td/a/@href').getall():
             yield scrapy.Request(response.urljoin(link), callback=self.parse_details)
+
 
     def parse_details(self, response):
         table = response.xpath('//*[@id="c"]/div/table')
@@ -35,6 +37,7 @@ class BrandenburgSpider(SchoolSpider):
             data[key] = [self.fix_data(part) for part in value]
         yield data
 
+
     def fix_data(self, string):
         """
         fix wrong tabs, spaces and backslashes
@@ -44,6 +47,7 @@ class BrandenburgSpider(SchoolSpider):
             return None
         string = ' '.join(string.split())
         return string.replace('\\', '').replace('|at|','@').strip()
+
 
     @staticmethod
     def normalize(item: Item) -> School:

@@ -19,6 +19,7 @@ class RheinlandPfalzSpider(SchoolSpider):
         'https://www.statistik.rlp.de/de/service/adress-suche/berufsbildende-schulen/stala/search/General/schoolp/'
     ]
 
+
     def start_requests(self):
         data = {
             'tx_stala_general[name]:': '',
@@ -27,6 +28,7 @@ class RheinlandPfalzSpider(SchoolSpider):
                                    formdata=data,
                                    callback=self.parse_schoolist)
                 for url in self.start_urls]
+
 
     # go on each schools details side
     def parse_schoolist(self, response):
@@ -44,6 +46,7 @@ class RheinlandPfalzSpider(SchoolSpider):
                 meta={'school_type': school_type},
                 callback=self.parse_school_data
             )
+
 
     # get the information
     def parse_school_data(self, response):
@@ -74,12 +77,15 @@ class RheinlandPfalzSpider(SchoolSpider):
 
         yield data
 
+
     # fix wrong tabs, spaces and backslashes
     def fix_data(self, string):
         string = ' '.join(string.split())
         string.replace('\\', '')
         return string
 
+
+    @staticmethod
     def normalize(self, item: Item) -> School:
         return School(name=item.get('name'),
                       id='RP-{}'.format(item.get('id')),

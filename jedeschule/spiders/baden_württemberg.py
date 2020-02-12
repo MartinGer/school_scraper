@@ -6,6 +6,7 @@ from scrapy import Item
 import time
 import json
 
+
 class BadenWürttembergSpider(scrapy.Spider):
     name = "baden-württemberg"
     root_url = "https://www.statistik.rlp.de/"
@@ -13,6 +14,7 @@ class BadenWürttembergSpider(scrapy.Spider):
     start_urls = [
                   url,
                  ]
+
 
     # click the search button to return all results
     def parse(self, response):
@@ -51,6 +53,7 @@ class BadenWürttembergSpider(scrapy.Spider):
                     callback=self.parse_schoolist)
         yield req
 
+
     # go on each schools details side
     def parse_schoolist(self, response):
         school_data_url = 'https://lobw.kultus-bw.de/didsuche/DienststellenSucheWebService.asmx/GetDienststelle'
@@ -71,6 +74,7 @@ class BadenWürttembergSpider(scrapy.Spider):
                         },
                         callback=self.parse_school_data)
             yield req
+
 
     # get the information
     def parse_school_data(self, response):
@@ -99,14 +103,7 @@ class BadenWürttembergSpider(scrapy.Spider):
         yield data
 
 
-    # fix wrong tabs, spaces and new lines
-    def fix_data(self, string):
-        if string:
-            string = ' '.join(string.split())
-            string.replace('\n', '')
-        return string
-
-
+    @staticmethod
     def normalize(self, item: Item) -> School:
         return School(name=item.get('name'),
                       id='BW-{}'.format(item.get('id')),

@@ -12,7 +12,9 @@ class ThueringenSpider(SchoolSpider):
     base_url = "https://www.schulportal-thueringen.de"
 
     start_urls = [
-        'https://www.schulportal-thueringen.de/tip/schulportraet_suche/search.action?tspi=&tspm=&vsid=none&mode=&extended=0&anwf=schulportraet&freitextsuche=&name=&schulnummer=&strasse=&plz=&ort=&schulartDecode=&schulamtDecode=&kzFreierTraeger_cb=1&kzFreierTraeger=2&schultraegerDecode=&sortierungDecode=Schulname&rowsPerPage=999&schulartCode=&schulamtCode=&schultraegerCode=&sortierungCode=10&uniquePortletId=portlet_schulportraet_suche_WAR_tip1109990a_e473_4c62_872b_4ef69bdb6c5d&ajaxId=schulportraet_suche_results']
+        'https://www.schulportal-thueringen.de/tip/schulportraet_suche/search.action?tspi=&tspm=&vsid=none&mode=&extended=0&anwf=schulportraet&freitextsuche=&name=&schulnummer=&strasse=&plz=&ort=&schulartDecode=&schulamtDecode=&kzFreierTraeger_cb=1&kzFreierTraeger=2&schultraegerDecode=&sortierungDecode=Schulname&rowsPerPage=999&schulartCode=&schulamtCode=&schultraegerCode=&sortierungCode=10&uniquePortletId=portlet_schulportraet_suche_WAR_tip1109990a_e473_4c62_872b_4ef69bdb6c5d&ajaxId=schulportraet_suche_results'
+        ]
+
 
     # TODO: parse last_modified
     def parse(self, response):
@@ -35,6 +37,7 @@ class ThueringenSpider(SchoolSpider):
             request.meta['collection'] = collection
             yield request
 
+
     def parse_overview(self, response):
         #inspect_response(response, self)
         collection = response.meta['collection']
@@ -46,6 +49,7 @@ class ThueringenSpider(SchoolSpider):
         collection['data_url'] = response.url
         collection['Leitbild'] = " ".join(response.css(".tispo_htmlUserContent ::text").extract())
         yield collection
+
 
     @staticmethod
     def normalize(item: Item) -> School:
@@ -62,6 +66,7 @@ class ThueringenSpider(SchoolSpider):
                       provider=item.get('Schulträger'),
                       fax=item.get('Telefax'),
                       phone=item.get('Telefon'))
+
 
     @staticmethod
     def _deobfuscate_email(orig):

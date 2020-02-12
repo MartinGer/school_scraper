@@ -86,3 +86,41 @@ def crawl_mvp():
     with open('data/mecklenburg-vorpommern.json', 'w') as json_file:
         json_file.write(json.dumps(data))
     os.remove(filename)
+
+
+
+
+def normalize_mv():
+    state = 'mecklenburg-vorpommern'
+    with open(os.path.join(BASE_PATH, 'data/{}.json'.format(state)), encoding="utf8") as f:
+        data = json.load(f)
+    with open(os.path.join(BASE_PATH, 'data/{}.csv'.format(state)), 'w', newline='', encoding="utf8") as f:
+        output = csv.writer(f)
+        output.writerow(School._fields)
+
+        for row in data:
+            if isinstance(row['Dst-Nr.:'], float):
+                school_id = int(row['Dst-Nr.:'])
+            else:
+                school_id = row['Dst-Nr.:']
+
+            try:
+                schulart = row['Schulart/ Org.form']
+            except:
+                schulart = row['Schulart/\nOrg.form']
+
+            s = School(
+                id='MV-{}'.format(school_id),
+                name=row['Schulname'],
+                address=row['Straße, Haus-Nr.'],
+                address2='',
+                zip=str(int(float(row['Plz']))) if row['Plz'] != '' else '',
+                city=row['Ort'],
+                school_type=schulart,
+                phone=row['Telefon'],
+                fax=row['Telefax'],
+                email=row['E-Mail'],
+                website=row['Homepage']
+            )
+
+            output.writerow(s)

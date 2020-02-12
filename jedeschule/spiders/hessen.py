@@ -182,7 +182,6 @@ def normalize(data):
                 id          = 'HE-{}'.format(str(int(row['Schul-nummer']))),
                 name        = row['Name der Schule'],
                 address     = row['Straße, Hausnummer'],
-                address2    = '',
                 zip         = int(row['PLZ']),
                 city        = row['Schulort'],
                 school_type = row['Schultyp'],

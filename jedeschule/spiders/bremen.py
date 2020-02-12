@@ -13,9 +13,11 @@ class BremenSpider(SchoolSpider):
     start_urls = ['http://www.bildung.bremen.de/detail.php?template=35_schulsuche_stufe2_d']
     global_id = 1000
 
+
     def parse(self, response):
         for link in response.css(".table_daten_container a ::attr(href)").extract():
             yield scrapy.Request(response.urljoin(link), callback=self.parse_detail)
+
 
     def parse_detail(self, response):
         lis = response.css(".kogis_main_visitenkarte ul li")
@@ -33,12 +35,14 @@ class BremenSpider(SchoolSpider):
             collection['data_url'] = response.url
         yield collection
 
+
     def fix_number(number):
         new = ''
         for letter in number:
             if letter.isdigit():
                 new+=letter
         return new
+
 
     @staticmethod
     def normalize(item: Item) -> School:

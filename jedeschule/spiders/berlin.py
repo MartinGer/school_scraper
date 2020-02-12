@@ -11,10 +11,12 @@ class BerlinSpider(scrapy.Spider):
     start_url = base_url + 'SchulListe.aspx/'
     start_urls = [start_url]
 
+
     def parse(self, response):
         schools = response.css('td a::attr(href)').extract()
         for i, school in enumerate(schools):
             yield scrapy.Request(self.start_url + school, callback=self.parse_detail, meta={'cookiejar': i})
+
 
     def parse_detail(self, response):
         meta = {}
@@ -43,6 +45,7 @@ class BerlinSpider(scrapy.Spider):
         yield scrapy.Request('https://www.berlin.de/sen/bildung/schule/berliner-schulen/schulverzeichnis/schuelerschaft.aspx?view=jgs',
                              meta=meta, callback=self.call_students, dont_filter=True)
 
+
     def call_students(self, response):
         links = response.css('#NaviSchuelerschaft ul ul li a::attr(href)').extract()
         meta = response.meta
@@ -53,6 +56,7 @@ class BerlinSpider(scrapy.Spider):
             yield scrapy.Request(self.base_url + links[0], meta=response.meta, dont_filter=True, callback=self.parse_students)
         else:
             yield response.meta
+
 
     def parse_students(self, response):
         year = response.request.url.rsplit('=', 1)[1]
@@ -69,6 +73,7 @@ class BerlinSpider(scrapy.Spider):
             yield scrapy.Request('https://www.berlin.de/sen/bildung/schule/berliner-schulen/schulverzeichnis/schulpersonal.aspx?view=pers',
                                  meta=meta, callback=self.call_teacher, dont_filter=True)
 
+
     def call_teacher(self, response):
         links = response.css('#NaviSchulpersonal ul ul li a::attr(href)').extract()
         meta = response.meta
@@ -78,6 +83,7 @@ class BerlinSpider(scrapy.Spider):
             yield scrapy.Request(self.base_url + links[0], meta=response.meta, dont_filter=True, callback=self.parse_teachers)
         else:
             yield response.meta
+
 
     def parse_teachers(self, response):
         year = response.request.url.rsplit('=', 1)[1]
@@ -93,6 +99,7 @@ class BerlinSpider(scrapy.Spider):
         else:
             yield meta
 
+
     def parse_table(self, table):
         result = {}
         keys = table.css('th::text').extract()
@@ -100,6 +107,7 @@ class BerlinSpider(scrapy.Spider):
             for idx, value in enumerate(row.css('td')):
                 result[keys[idx]] = value.css('::text').extract_first()
         return result
+
 
     # fix wrong tabs, spaces and new lines
     def fix_data(self, string):
@@ -109,6 +117,8 @@ class BerlinSpider(scrapy.Spider):
             string.replace('\t', '')
         return string
 
+
+    @staticmethod
     def normalize(self, item: Item) -> School:
         return School(name=item.get('name'),
                       id='BE-{}'.format(item.get('id')),

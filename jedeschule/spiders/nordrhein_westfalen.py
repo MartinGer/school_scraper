@@ -42,7 +42,7 @@ def __retrieve_xml(url):
     return data
 
 
-def crawl_nrw():
+def crawl_data():
     base_url_nrw = 'https://www.schulministerium.nrw.de/BiPo/OpenData/Schuldaten/'
 
     schulbetrieb = __retrieve_keys(urljoin(base_url_nrw, 'key_schulbetriebsschluessel.csv'))
@@ -82,5 +82,29 @@ def crawl_nrw():
 
         data.append(data_elem)
     print('Parsed ' + str(len(data)) + ' data elements')
-    with open('data/nrw.json', 'w', encoding='utf-8') as json_file:
-        json_file.write(json.dumps(data))
+    return data
+
+
+def normalize(data):
+    normalized_data = []
+    for row in data:
+        school_dict = {
+            'id': 'NRW-{}'.format(row['Schulnummer']),
+            'name': row['Schulbezeichnung_1'],
+            'address': row['Strasse'],
+            'zip': row['PLZ'],
+            'city': row['Ort'],
+            'school_type': row['Schulform'],
+            'phone': row['Telefonvorwahl'] + row['Telefon'] if row['Telefonvorwahl'] != None and row['Telefon'] != None else '',
+            'fax': row['Faxvorwahl'] + row['Fax'] if row['Faxvorwahl'] != None and row['Fax'] != None else '',
+            'email': row['E-Mail'],
+            'website': row['Homepage']
+        }
+        normalized_data.append({'info': school_dict})
+            
+    with open('data/nordrhein-westfalen.json', 'w') as json_file:
+        json_file.write(json.dumps(normalized_data))
+
+
+def crawl_nrw():
+    return normalize(crawl_data())

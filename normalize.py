@@ -46,7 +46,7 @@ def fix_phone_and_fax(number):
 
 
 def combine_states():
-    dtype_dic = {'id'          : str,    
+    dtype_dict = {'id'          : str,    
                  'name'        : str,
                  'address'     : str,
                  'zip'         : str,
@@ -58,11 +58,16 @@ def combine_states():
                  'website'     : str,
                  }
 
-    for file_name in glob.glob('data/*.csv'):
-        pd.read_csv(file_name, dtype = dtype_dic)
-        print(file_name)
-    return
+    full_data = pd.DataFrame(columns=School._fields)
 
+    for file_name in glob.glob('data/*.csv'):
+        cur_file = pd.read_csv(file_name, dtype=dtype_dict)
+        full_data = full_data.append(cur_file)
+   
+    full_data = full_data[full_data['zip'] != '0']        # remove test rows
+    full_data.drop_duplicates(subset=['id'], inplace=True)
+
+    full_data.to_csv("data/full_school_data.csv", index=False)
 
 STATES = [
     'baden-württemberg',
@@ -84,9 +89,9 @@ STATES = [
 ]
 
 if __name__ == '__main__':
-    for state in STATES:
-        print('Normalize', state)
-        normalize(state)
+    # for state in STATES:
+    #     print('Normalize', state)
+    #     normalize(state)
 
     print('Create combined csv..')
     combine_states()

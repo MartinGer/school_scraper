@@ -3,6 +3,8 @@ import scrapy
 from scrapy import Item
 from scrapy.shell import inspect_response
 
+import re
+
 from jedeschule.items import School
 from jedeschule.spiders.school_spider import SchoolSpider
 
@@ -69,8 +71,14 @@ class SchleswigHolsteinSpider(SchoolSpider):
                       zip=item.get("Postleitzahl"),
                       city=item.get("Ort"),
                       email=item.get('E-Mail'),
-                      school_type=item.get('Schularten'),
+                      school_type=fix_school_type(item.get('Schularten')),
                       fax=item.get('Fax'),
                       phone=item.get('Telefon'),
                       director=item.get('Schulleitung'))
 
+
+def fix_school_type(school_type):
+    if school_type == school_type:          # make sure school_type is not nan
+        regex = re.compile('[\t;\xa0]')
+        fixed_type = regex.sub('', school_type)
+        return fixed_type.replace('  ',', ').strip()

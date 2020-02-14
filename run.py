@@ -41,10 +41,10 @@ def crawl():
     # yield runner.crawl(NiedersachsenSpider)
     # nordrhein_westfalen.crawl_nrw()
     # yield runner.crawl(RheinlandPfalzSpider)
-    yield runner.crawl(SaarlandSpider)
+    # yield runner.crawl(SaarlandSpider)
     # yield runner.crawl(SachsenAnhaltSpider)
     # yield runner.crawl(SachsenSpider)
-    # yield runner.crawl(SchleswigHolsteinSpider)
+    yield runner.crawl(SchleswigHolsteinSpider)
     # yield runner.crawl(ThueringenSpider)
     reactor.stop()
 

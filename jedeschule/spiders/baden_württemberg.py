@@ -17,7 +17,7 @@ class BadenWürttembergSpider(scrapy.Spider):
     # click the search button to return all results
     def parse(self, response):
         links_url = 'https://lobw.kultus-bw.de/didsuche/DienststellenSucheWebService.asmx/SearchDienststellen'
-        timestamp = str(int(time.time())) 
+        timestamp = str(int(time.time()))
         body = {"command":"QUICKSEARCH",
                     "data":{
                         "dscSearch":"",
@@ -32,7 +32,7 @@ class BadenWürttembergSpider(scrapy.Spider):
                         "dscAusbildungsSchulenSelected":"",
                         "dscAusbildungsSchulenSelectedSart":"",
                         "dscPageNumber":"1",
-                        "dscPageSize":"1213",
+                        "dscPageSize":"10000",                  
                         "dscUnique":timestamp
                         }
                 }

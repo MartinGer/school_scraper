@@ -2,6 +2,7 @@ import json
 import csv
 import os
 import glob
+import re
 import pandas as pd
 from collections import namedtuple
 
@@ -21,33 +22,41 @@ def normalize(state):
 
         for row in data:
             s = School(
-                id=row['info']['id'] if 'id' in row['info'] else '',
-                name=row['info']['name'],
-                address=row['info']['address'],
-                zip=row['info'].get('zip'),
-                city=row['info'].get('city'),
-                school_type=row['info']['school_type'] if 'school_type' in row['info'] else '',
-                phone=row['info']['phone'],
-                fax=row['info']['fax'] if 'fax' in row['info'] else '',
-                email=row['info']['email'] if 'email' in row['info'] else '',
-                website=row['info']['website'] if 'website' in row['info'] else '',
+                id          = row['info']['id'] if 'id' in row['info'] else '',
+                name        = row['info']['name'],
+                address     = row['info']['address'],
+                zip         = row['info'].get('zip'),
+                city        = row['info'].get('city'),
+                school_type = row['info']['school_type'] if 'school_type' in row['info'] else '',
+                phone       = fix_phone_and_fax(row['info']['phone']),
+                fax         = fix_phone_and_fax(row['info']['fax'] if 'fax' in row['info'] else ''),
+                email       = row['info']['email'] if 'email' in row['info'] else '',
+                website     = row['info']['website'] if 'website' in row['info'] else '',
             )
 
             output.writerow(s)
 
 
+def fix_phone_and_fax(number):
+    if number is not None:                
+        number = number.split('oder')[0]  # sometimes there are two number with 'oder' in between: Just take the first one
+        regex = re.compile('[")(\t;\xa0+/ -]')
+        fixed_number = regex.sub('', number)
+        return fixed_number.strip()
+
+
 def combine_states():
-    dtype_dic= {'id'          : str,    
-                'name'        : str,
-                'address'     : str,
-                'zip'         : str,
-                'city'        : str,
-                'school_type' : str,
-                'phone'       : str,
-                'fax'         : str,
-                'email'       : str,
-                'website'     : str,
-                }
+    dtype_dic = {'id'          : str,    
+                 'name'        : str,
+                 'address'     : str,
+                 'zip'         : str,
+                 'city'        : str,
+                 'school_type' : str,
+                 'phone'       : str,
+                 'fax'         : str,
+                 'email'       : str,
+                 'website'     : str,
+                 }
 
     for file_name in glob.glob('data/*.csv'):
         pd.read_csv(file_name, dtype = dtype_dic)
@@ -75,9 +84,9 @@ STATES = [
 ]
 
 if __name__ == '__main__':
-    # for state in STATES:
-    #      print('Normalize', state)
-    #     normalize(state)
+    for state in STATES:
+        print('Normalize', state)
+        normalize(state)
 
     print('Create combined csv..')
     combine_states()

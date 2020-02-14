@@ -45,18 +45,30 @@ def fix_phone_and_fax(number):
         return fixed_number.strip()
 
 
+def extract_school_type(name, unique_school_types):
+    school_type_list = []
+    for school_type in unique_school_types:
+        if pd.notna(school_type) and school_type in name and school_type not in (', '.join(school_type_list)):
+            school_type_list.append(school_type)
+    if len(school_type_list) >= 1:
+        new_school_type = (', '.join(school_type_list))
+        if pd.isnull(new_school_type):
+            print(new_school_type)
+        return new_school_type
+
+
 def combine_states():
     dtype_dict = {'id'          : str,    
-                 'name'        : str,
-                 'address'     : str,
-                 'zip'         : str,
-                 'city'        : str,
-                 'school_type' : str,
-                 'phone'       : str,
-                 'fax'         : str,
-                 'email'       : str,
-                 'website'     : str,
-                 }
+                'name'        : str,
+                'address'     : str,
+                'zip'         : str,
+                'city'        : str,
+                'school_type' : str,
+                'phone'       : str,
+                'fax'         : str,
+                'email'       : str,
+                'website'     : str,
+                }
 
     full_data = pd.DataFrame(columns=School._fields)
 
@@ -66,6 +78,9 @@ def combine_states():
    
     full_data = full_data[full_data['zip'] != '0']        # remove test rows
     full_data.drop_duplicates(subset=['id'], inplace=True)
+
+    unique_school_types = full_data['school_type'].unique()
+    full_data['school_type'] = full_data['school_type'].fillna(full_data['name'].apply(extract_school_type, args=(unique_school_types,)))  # try to fill empty school_types by extracting them from the name 
 
     full_data.to_csv("data/full_school_data.csv", index=False)
 
@@ -89,9 +104,9 @@ STATES = [
 ]
 
 if __name__ == '__main__':
-    # for state in STATES:
-    #     print('Normalize', state)
-    #     normalize(state)
+    for state in STATES:
+        print('Normalize', state)
+        normalize(state)
 
     print('Create combined csv..')
     combine_states()

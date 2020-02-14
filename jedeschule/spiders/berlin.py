@@ -125,7 +125,7 @@ class BerlinSpider(scrapy.Spider):
                       id='BE-{}'.format(item.get('id')),
                       address=item.get('address'),
                       zip=item.get('zip'),
-                      city=item.get('city'),
+                      city=item.get('city').split(' ', 1)[0],
                       website=item.get('web'),
                       email=item.get('mail'),
                       school_type=item.get('schooltype'),

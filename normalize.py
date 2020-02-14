@@ -1,6 +1,7 @@
 import json
 import csv
 import os
+import glob
 from collections import namedtuple
 
 BASE_PATH = '.'
@@ -34,20 +35,25 @@ def normalize(state):
             output.writerow(s)
 
 
+STATES = [
+    'baden-württemberg',
+    'bayern',
+    'berlin',
+    'brandenburg',
+    'bremen',
+    'hamburg',
+    'hessen',
+    'niedersachsen',
+    'nordrhein-westfalen',
+    'mecklenburg-vorpommern',
+    'rheinland-pfalz',
+    'saarland',
+    'sachsen',
+    'schleswig-holstein',
+    'sachsen-anhalt',
+    'thueringen'
+]
+
 if __name__ == '__main__':
-    normalize('baden-württemberg')
-    normalize('bayern')
-    normalize('berlin')
-    normalize('brandenburg')
-    normalize('bremen')
-    normalize('hamburg')
-    normalize('hessen')
-    normalize('niedersachsen')
-    normalize('nordrhein-westfalen')
-    normalize('mecklenburg-vorpommern')
-    normalize('rheinland-pfalz')
-    normalize('saarland')
-    normalize('sachsen')
-    normalize('schleswig-holstein')
-    normalize('sachsen-anhalt')
-    normalize('thueringen')
+    for state in STATES:
+        normalize(state)

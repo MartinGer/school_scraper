@@ -4,7 +4,7 @@ import wget
 import xlrd
 
 
-Legend = {
+LEGEND = {
     'Agy': 'Abendgymnasium',
     'BLS': 'Berufliche Schule',
     'FöL': 'Schule mit dem Förderschwerpunkt Lernen',
@@ -91,7 +91,7 @@ def normalize(data):
                 'address': row['Straße, Haus-Nr.'],
                 'zip': str(int(float(row['Plz']))) if row['Plz'] != '' else '',
                 'city': row['Ort'],
-                'school_type': Legend[schulart],
+                'school_type': LEGEND[schulart],
                 'phone': row['Telefon'],
                 'fax': row['Telefax'],
                 'email': row['E-Mail'],

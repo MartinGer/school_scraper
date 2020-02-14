@@ -42,7 +42,6 @@ if __name__ == '__main__':
     normalize('bremen')
     normalize('hamburg')
     normalize('hessen')
-    normalize_mv()
     normalize('niedersachsen')
     normalize('nordrhein-westfalen')
     normalize('mecklenburg-vorpommern')

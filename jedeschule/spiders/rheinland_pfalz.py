@@ -86,7 +86,7 @@ class RheinlandPfalzSpider(SchoolSpider):
 
 
     @staticmethod
-    def normalize(self, item: Item) -> School:
+    def normalize(item: Item) -> School:
         return School(name=item.get('name'),
                       id='RP-{}'.format(item.get('id')),
                       address=item.get('Adresse'),

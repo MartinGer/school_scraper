@@ -5,6 +5,7 @@ from jedeschule.items import School
 from scrapy import Item
 import re
 
+
 class BerlinSpider(scrapy.Spider):
     name = "berlin"
     base_url = 'http://www.berlin.de/sen/bildung/schule/berliner-schulen/schulverzeichnis/'
@@ -119,7 +120,7 @@ class BerlinSpider(scrapy.Spider):
 
 
     @staticmethod
-    def normalize(self, item: Item) -> School:
+    def normalize(item: Item) -> School:
         return School(name=item.get('name'),
                       id='BE-{}'.format(item.get('id')),
                       address=item.get('address'),

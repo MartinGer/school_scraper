@@ -51,7 +51,7 @@ class SaarlandSpider(scrapy.Spider):
     def normalize(item):
         zip, city = item['Stadt/Gemeinde'].split(', ')
         phone = item.get('Telefon').split('\n')[0] if item.get('Telefon') else None
-        return School(id=item['id'],
+        return School(id=clean_saarland_id(item['id']),
                       name=item.get('name'),
                       phone=phone,
                       director=item.get('Schulleiter/in'),
@@ -61,3 +61,8 @@ class SaarlandSpider(scrapy.Spider):
                       address=item.get('Straße'),
                       zip=zip,
                       city=city)
+
+
+def clean_saarland_id(id):
+    clean_id = id.replace('{','').replace('}','')
+    return clean_id[:(clean_id.index('-', clean_id.index('-')+1)-1)]  # truncate the long part

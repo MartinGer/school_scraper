@@ -2,6 +2,7 @@ import json
 import csv
 import os
 import glob
+import pandas as pd
 from collections import namedtuple
 
 BASE_PATH = '.'
@@ -35,6 +36,25 @@ def normalize(state):
             output.writerow(s)
 
 
+def combine_states():
+    dtype_dic= {'id'          : str,    
+                'name'        : str,
+                'address'     : str,
+                'zip'         : str,
+                'city'        : str,
+                'school_type' : str,
+                'phone'       : str,
+                'fax'         : str,
+                'email'       : str,
+                'website'     : str,
+                }
+
+    for file_name in glob.glob('data/*.csv'):
+        pd.read_csv(file_name, dtype = dtype_dic)
+        print(file_name)
+    return
+
+
 STATES = [
     'baden-württemberg',
     'bayern',
@@ -55,5 +75,9 @@ STATES = [
 ]
 
 if __name__ == '__main__':
-    for state in STATES:
-        normalize(state)
+    # for state in STATES:
+    #      print('Normalize', state)
+    #     normalize(state)
+
+    print('Create combined csv..')
+    combine_states()

@@ -1,6 +1,6 @@
 # jedeschule-scraper
 This scraper is based on https://github.com/Datenschule/jedeschule-scraper
-It crawls the school data from the 16 different states of Germany as JSON files in different format and different data. 
+It crawls the school data from the 16 different states of Germany as JSON files in different format and with different data depending on the websites where the school data is crawled. 
 After that the files then can be normalized in 16 different and also be combined to one uniform CSV file.
 # Pretty session protocols
 
@@ -11,18 +11,16 @@ pip install -r requirements.txt
 
 ## Running:
 
-Crawl the data, this will take quite a while.
+Crawl the data, this will take quite a while. The script will generate a new directory "data". The result of each scraper is available as json file:
 ```bash
 ./run.py
 ```
 
 Postprocess the files to uniform CSV files and one combined CSV file with all schools called full_school_data.csv.
-Columns are id, name, address, zip, city, school_type, phone, fax, email and website
+Columns are id, name, address, zip, city, school_type, phone, fax, email and website:
 ```bash
 ./normalize.py
 ```
-
-The script will generate a new directory "data". The result of each scraper is available as json file
 
 Sources:
 * Schulverzeichnis Baden-Württemberg: ['https://lobw.kultus-bw.de/didsuche/'](https://lobw.kultus-bw.de/didsuche/)

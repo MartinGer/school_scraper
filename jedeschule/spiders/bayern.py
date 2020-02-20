@@ -13,7 +13,6 @@ class BayernSpider(scrapy.Spider):
 
     def parse(self, response):
         number_of_pages = response.css("div.schulsuche > div > p.Right a:last-child::text").extract_first()
-        # number_of_pages = 2
         for i in range(1, int(number_of_pages) + 1):
             url = "https://www.km.bayern.de/schueler/schulsuche.html?s=&t=9999&r=9999&o=9999&u=0&m=3&seite={page}"
             yield scrapy.Request(url.format(page=i),

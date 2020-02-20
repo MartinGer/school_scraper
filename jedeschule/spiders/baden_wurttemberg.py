@@ -7,7 +7,6 @@ from jedeschule.items import School
 
 class BadenWurttembergSpider(scrapy.Spider):
     name = "baden-wurttemberg"
-    root_url = "https://www.statistik.rlp.de/"
     url = 'https://lobw.kultus-bw.de/didsuche/'
     start_urls = [
                   url,

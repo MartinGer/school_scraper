@@ -85,7 +85,7 @@ def combine_states():
     full_data.to_csv("data/full_school_data.csv", index=False)
 
 STATES = [
-    'baden-württemberg',
+    'baden-wurttemberg',
     'bayern',
     'berlin',
     'brandenburg',

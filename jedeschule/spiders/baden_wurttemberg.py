@@ -5,8 +5,8 @@ from scrapy import Item
 from jedeschule.items import School
 
 
-class BadenWürttembergSpider(scrapy.Spider):
-    name = "baden-württemberg"
+class BadenWurttembergSpider(scrapy.Spider):
+    name = "baden-wurttemberg"
     root_url = "https://www.statistik.rlp.de/"
     url = 'https://lobw.kultus-bw.de/didsuche/'
     start_urls = [

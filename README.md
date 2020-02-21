@@ -22,7 +22,28 @@ Columns are id, name, address, zip, city, school_type, phone, fax, email and web
 ./normalize.py
 ```
 
-Sources:
+Additionally  use the run_scripts.py file to start both scripts together:
+```bash
+./run_scripts.py
+```
+
+## Docker:
+
+You can also use docker to run the crawler and output your files. 
+
+The Dockerfile is included in the repository. To build it use 
+```bash
+docker build --tag school_crawler .
+```
+
+and run it by matching the output "data" folder to a choosen local folder, for example
+```bash
+docker run -v $(pwd):/data school_crawler
+```
+
+
+
+## Sources:
 * Schulverzeichnis Baden-Württemberg: ['https://lobw.kultus-bw.de/didsuche/'](https://lobw.kultus-bw.de/didsuche/)
 * Schulverzeichnis Bayern: ['https://www.km.bayern.de/schueler/schulsuche.html?s=&t=9999&r=9999&o=9999&u=0&m=3&seite=1'](https://www.km.bayern.de/schueler/schulsuche.html?s=&t=9999&r=9999&o=9999&u=0&m=3&seite=1)
 * Schulportraits Brandenburg: ['https://bildung-brandenburg.de/schulportraets/index.php?id=uebersicht'](https://bildung-brandenburg.de/schulportraets/index.php?id=uebersicht)

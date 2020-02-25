@@ -11,7 +11,7 @@ pip install -r requirements.txt
 
 ## Running:
 
-Crawl the data, this will take quite a while. The script will generate a new directory "data". The result of each scraper is available as json file:
+Crawl the data, this will take quite a while. The script will save the files in directory "data". The result of each scraper is available as json file:
 ```bash
 ./run.py
 ```
@@ -22,7 +22,7 @@ Columns are id, name, address, zip, city, school_type, phone, fax, email and web
 ./normalize.py
 ```
 
-Additionally  use the run_scripts.py file to start both scripts together:
+Additionally use the run_scripts.py file to start both scripts together:
 ```bash
 ./run_scripts.py
 ```
@@ -36,11 +36,22 @@ The Dockerfile is included in the repository. To build it use
 docker build --tag school_crawler .
 ```
 
-and run it by matching the output "data" folder to a choosen local folder, for example
+and run it by the command. This will run the run_scripts.py in the docker image:
 ```bash
-docker run -v $(pwd):/data school_crawler
+docker run school_crawler
 ```
 
+To now be able to access the crawled files, we have to get those out of the data folder in the docker image. 
+Use 
+```bash
+docker ps -a
+```
+to find your Container ID.
+
+Now you can copy the data folder of the image to a local folder:
+```bash
+docker cp <Container ID>:/app/data <your/local/folder>
+```
 
 
 ## Sources:

@@ -1,4 +1,4 @@
-lxml==4.4.2
+lxml==4.9.1
 wget==3.2
 requests==2.23.0
 xlrd==1.2.0
